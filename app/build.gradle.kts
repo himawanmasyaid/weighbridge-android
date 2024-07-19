@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -79,5 +80,7 @@ dependencies {
     implementation("io.insert-koin:koin-android:3.3.3")
     implementation("io.insert-koin:koin-androidx-workmanager:3.3.3")
 
+    // firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
 
 }

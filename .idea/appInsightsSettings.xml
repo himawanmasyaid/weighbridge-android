@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.himawan.weighbridge" />
+                  <option name="mobileSdkAppId" value="1:929238941399:android:914c70e6434683dd7c7a92" />
+                  <option name="projectId" value="weighbridge-d20ca" />
+                  <option name="projectNumber" value="929238941399" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
