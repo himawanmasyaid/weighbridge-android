@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Weighbridge"
 include(":app")
+ 
