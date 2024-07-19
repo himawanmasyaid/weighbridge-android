@@ -1,4 +1,4 @@
-package com.himawan.weighbridge
+package com.himawan.weighbridge.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
