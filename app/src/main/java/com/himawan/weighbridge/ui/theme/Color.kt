@@ -11,5 +11,7 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val Dune = Color(0xFF333333)
+val Green = Color(0xFF006837)
 
 val TextDefaultColor = Dune
+val PrimaryColor = Green
