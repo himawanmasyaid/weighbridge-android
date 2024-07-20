@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "929238941399",
+    "project_id": "weighbridge-d20ca",
+    "storage_bucket": "weighbridge-d20ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:929238941399:android:914c70e6434683dd7c7a92",
+        "android_client_info": {
+          "package_name": "com.himawan.weighbridge"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAco7bblN838wUPHk-iHAyJaqd1zCdoKmY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
