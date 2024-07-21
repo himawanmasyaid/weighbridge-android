@@ -12,6 +12,8 @@ val Pink40 = Color(0xFF7D5260)
 
 val Dune = Color(0xFF333333)
 val Green = Color(0xFF006837)
+val LineColor = Color(0xFFE0E0E0)
 
 val TextDefaultColor = Dune
 val PrimaryColor = Green
+val HintColor =  Color(0xFF828282)
