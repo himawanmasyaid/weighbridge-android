@@ -8,9 +8,9 @@ data class Ticket (
     var licenseNumber: String,
     var inboundWeight: Int,
     var outboundWeight: Int,
-    var netWeight: Int,
-    var date: String,
-    var time: String,
+    var netWeight: Int = 0,
+    var date: String = "",
+    var time: String = "",
     var createdAt: Long? = 0,
     var updatedAt: Long? = 0
 ) {
