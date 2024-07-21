@@ -202,14 +202,14 @@ class WeighingCreateActivity : ComponentActivity() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Berat Masuk",
+                    text = "Berat Masuk (TON)",
                     style = TextStyles.textParagraph2
                 )
 
                 OutlinedTextFieldComposable(
                     value = inboundWeight,
                     onValueChange = { inboundWeight = it },
-                    label = "Input berat muatan",
+                    label = "Input berat muatan (TON)",
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         autoCorrect = false,
@@ -219,14 +219,14 @@ class WeighingCreateActivity : ComponentActivity() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Berat Keluar",
+                    text = "Berat Keluar (TON)",
                     style = TextStyles.textParagraph2
                 )
 
                 OutlinedTextFieldComposable(
                     value = outboundWeight,
                     onValueChange = { outboundWeight = it },
-                    label = "Input berat muatan",
+                    label = "Input berat muatan (TON)",
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         autoCorrect = false,

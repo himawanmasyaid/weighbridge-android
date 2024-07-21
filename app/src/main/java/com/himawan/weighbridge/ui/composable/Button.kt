@@ -10,7 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.himawan.weighbridge.ui.theme.PrimaryColor
 import com.himawan.weighbridge.ui.theme.TextStyles
 
@@ -33,7 +35,7 @@ fun ButtonPrimary(
     ) {
         Text(
             text,
-            style = TextStyles.textParagraph1Bold,
+            style = TextStyles.textParagraph1Medium,
             color = Color.White
         )
     }

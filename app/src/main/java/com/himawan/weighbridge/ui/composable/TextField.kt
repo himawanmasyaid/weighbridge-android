@@ -17,6 +17,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -84,7 +88,7 @@ fun OutlinedTextSelectComposable(
             .padding(horizontal = 18.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
 
-    ) {
+        ) {
 
         Text(
             text = label,
@@ -101,8 +105,21 @@ fun OutlinedTextSelectComposable(
 
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TextFieldPreview() {
-    OutlinedTextSelectComposable("Input data disini", {})
+
+    var outboundWeight by rememberSaveable { mutableStateOf("") }
+
+//    OutlinedTextSelectComposable("Input data disini", {})
+
+//    OutlinedTextFieldComposable(
+//        value = outboundWeight,
+//        onValueChange = { outboundWeight = it },
+//        label = "Input berat muatan (TON)",
+//        keyboardOptions = KeyboardOptions.Default.copy(
+//            keyboardType = KeyboardType.Number,
+//            autoCorrect = false,
+//        )
+//    )
 }

@@ -45,8 +45,27 @@ fun ToolbarComposable(title: String, onClickListener: () -> Unit) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ToolbarTitleComposable(title: String) {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.White
+        ),
+        title = {
+            Text(
+                text = title,
+                style = TextStyles.textParagraph1Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        },
+        modifier = Modifier.background(Color.White),
+    )
+}
+
 //@Preview(showBackground = true)
 //@Composable
 //fun ToolbarPreview() {
-//    ToolbarComposable("Penimbangan", {})
+//    ToolbarTitleComposable("Weighbridge")
 //}

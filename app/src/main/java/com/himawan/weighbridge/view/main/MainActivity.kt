@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,25 +19,36 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.himawan.weighbridge.R
 import com.himawan.weighbridge.domain.model.Ticket
 import com.himawan.weighbridge.ui.composable.ButtonPrimary
+import com.himawan.weighbridge.ui.composable.ToolbarComposable
+import com.himawan.weighbridge.ui.composable.ToolbarTitleComposable
+import com.himawan.weighbridge.ui.theme.PrimaryColor
 import com.himawan.weighbridge.ui.theme.TextStyles
 import com.himawan.weighbridge.view.weighing_create.WeighingCreateActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -65,59 +78,105 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun InitView() {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
 
-            TicketListView(
-                modifier = Modifier
+        Scaffold(
+            topBar = {
+                ToolbarTitleComposable("Weighbridge")
+            },
+        ) {
+            Column(
+                Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .weight(1f)
-            )
+                    .padding(it),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
 
-            ButtonPrimary(
-                text = "Buat Penimbangan",
-                onClick = {
-                    startActivity(Intent(this@MainActivity, WeighingCreateActivity::class.java))
+                // Pengguna harus dapat memfilter dan mengurutkan
+                // daftar berdasarkan tanggal penimbangan, nama pengemudi, plat nomor
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Daftar tiket terbaru", style = TextStyles.textParagraph2Medium)
+
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_sort),
+                        contentDescription = "sort",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
+                                // navigate to edit
+                            },
+                    )
                 }
-            )
 
+                TicketListView(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .weight(1f)
+                )
+
+                ButtonPrimary(
+                    text = "Buat Penimbangan",
+                    onClick = {
+                        startActivity(Intent(this@MainActivity, WeighingCreateActivity::class.java))
+                    }
+                )
+
+            }
         }
+
     }
 
     @Composable
     fun TicketListView(modifier: Modifier = Modifier) {
 
         val tickets = viewModel.tickets.collectAsState(initial = emptyList()).value
+        val isLoading = viewModel.isLoading.observeAsState()
 
         setLog("tickets : ${tickets.size}")
 
         Box(modifier = modifier) {
-            if (tickets.isEmpty()) {
+
+            if (isLoading.value == true) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = "Ticket Empty",
-                        style = TextStyles.textParagraph1Medium
-                    )
+                    CircularProgressIndicator()
                 }
             } else {
-                LazyColumn(modifier = modifier) {
-                    items(tickets) {
-                        if (it != null) {
-                            TicketItem(ticket = it)
-                        }
-                    }
 
+                if (tickets.isEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Ticket Empty",
+                            style = TextStyles.textParagraph1Medium
+                        )
+                    }
+                } else {
+                    LazyColumn(modifier = modifier) {
+                        items(tickets) {
+                            if (it != null) {
+                                TicketItem(ticket = it)
+                            }
+                        }
+
+                    }
                 }
+
             }
+
         }
 
     }
@@ -134,25 +193,38 @@ class MainActivity : ComponentActivity() {
                 .background(color = Color.White) // white background
                 .border(width = 1.dp, color = Color(0XFFE0E0E0), shape = RoundedCornerShape(8.dp))
                 .padding(horizontal = 16.dp)
-                .padding(vertical = 18.dp)
+                .padding(top = 18.dp, bottom = 4.dp)
         ) {
 
-            Text(
-                text = "Nomor Tiket",
-                style = TextStyles.textParagraph2
-            )
-
-            Spacer(
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(4.dp)
-            )
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
 
-            Text(
-                text = ticket.id ?: "-",
-                style = TextStyles.textParagraph1Bold,
-                fontSize = 22.sp,
-            )
+                Column {
+                    Text(
+                        text = "Nomor Tiket",
+                        style = TextStyles.textParagraph2
+                    )
+
+                    Text(
+                        text = ticket.id ?: "-",
+                        style = TextStyles.textParagraph1Bold,
+                        fontSize = 22.sp,
+                    )
+                }
+
+                Image(
+                    painter = painterResource(id = R.drawable.ic_edit),
+                    contentDescription = "sort",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            // navigate to edit
+                        },
+                )
+            }
 
             Spacer(
                 modifier = Modifier
@@ -183,12 +255,12 @@ class MainActivity : ComponentActivity() {
 
                 Text(
                     text = "Supir",
-                    style = TextStyles.textParagraph1
+                    style = TextStyles.textParagraph2
                 )
 
                 Text(
                     text = ticket.driverName,
-                    style = TextStyles.textParagraph1Medium
+                    style = TextStyles.textParagraph2Medium
                 )
             }
 
@@ -201,12 +273,12 @@ class MainActivity : ComponentActivity() {
 
                 Text(
                     text = "Plat",
-                    style = TextStyles.textParagraph1
+                    style = TextStyles.textParagraph2
                 )
 
                 Text(
-                    text = ticket.licenseNumber,
-                    style = TextStyles.textParagraph1Medium
+                    text = ticket.licenseNumber.uppercase(),
+                    style = TextStyles.textParagraph2Medium
                 )
             }
 
@@ -230,12 +302,12 @@ class MainActivity : ComponentActivity() {
 
                 Text(
                     text = "Berat Bersih",
-                    style = TextStyles.textParagraph1
+                    style = TextStyles.textParagraph2
                 )
 
                 Text(
                     text = "${ticket.netWeight} TON",
-                    style = TextStyles.textParagraph1Medium
+                    style = TextStyles.textParagraph2Medium
                 )
             }
 
@@ -253,60 +325,45 @@ class MainActivity : ComponentActivity() {
 
                 Text(
                     text = "Truk Masuk",
-                    style = TextStyles.textParagraph1
+                    style = TextStyles.textParagraph2
                 )
 
                 Text(
                     text = ticket.time,
-                    style = TextStyles.textParagraph1Medium
+                    style = TextStyles.textParagraph2Medium
                 )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Button(
+                    onClick = {
+                        // navigate to detail
+                    },
+                    modifier = Modifier
+                        .padding(top = 12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PrimaryColor,
+                    ),
+                    shape = RoundedCornerShape(4.dp),
+                ) {
+                    Text(
+                        "Lihat Detail",
+                        style = TextStyles.textParagraph3Bold,
+                        color = Color.White
+                    )
+                }
             }
 
         }
     }
 
     @Composable
-    fun TicketPaginationListView(tickets: LazyPagingItems<Ticket>, modifier: Modifier = Modifier) {
-
-        setLog("refresh : ${tickets.loadState.refresh}")
-        setLog("item count : ${tickets.itemCount}")
-        setLog("loadState.append  : ${tickets.loadState.append}")
-        setLog("loadState.append  : ${tickets.loadState.prepend}")
-
-        if (tickets.loadState.refresh == LoadState.Loading && tickets.itemCount == 0) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CircularProgressIndicator()
-            }
-
-        } else {
-            LazyColumn(modifier = modifier) {
-
-                items(tickets.itemCount) { item ->
-                    TicketItem(
-                        tickets[item]!!
-                    )
-                }
-
-                if (tickets.loadState.append == LoadState.Loading) {
-                    item {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Bottom,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-                }
-            }
-        }
+    fun FilterView() {
 
     }
-
 
     private fun setLog(msg: String) {
         Log.e("ticket", msg)
@@ -318,18 +375,20 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainActivityPreview() {
 
-//    MainActivity().TicketItem(
-//        Ticket(
-//            id = "1234",
-//            date = "2023-03-15",
-//            time = "14:30:00",
-//            licenseNumber = "BG 1234 AB",
-//            driverName = "Arsad Sapardie",
-//            inboundWeight = 10000,
-//            outboundWeight = 8000,
-//            netWeight = 2000,
-//            createdAt = 1678903400,
-//            updatedAt = 1678903400
-//        )
-//    )
+//    MainActivity().InitView()
+
+    MainActivity().TicketItem(
+        Ticket(
+            id = "1234",
+            date = "2023-03-15",
+            time = "14:30:00",
+            licenseNumber = "BG 1234 AB",
+            driverName = "Arsad Sapardie",
+            inboundWeight = 10000,
+            outboundWeight = 8000,
+            netWeight = 2000,
+            createdAt = 1678903400,
+            updatedAt = 1678903400
+        )
+    )
 }
