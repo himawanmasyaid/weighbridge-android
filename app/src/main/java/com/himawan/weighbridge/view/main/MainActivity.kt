@@ -1,5 +1,6 @@
 package com.himawan.weighbridge.view.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -36,6 +37,7 @@ import androidx.paging.compose.LazyPagingItems
 import com.himawan.weighbridge.domain.model.Ticket
 import com.himawan.weighbridge.ui.composable.ButtonPrimary
 import com.himawan.weighbridge.ui.theme.TextStyles
+import com.himawan.weighbridge.view.weighing_create.WeighingCreateActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -78,9 +80,9 @@ class MainActivity : ComponentActivity() {
             )
 
             ButtonPrimary(
-                text = "Create",
+                text = "Buat Penimbangan",
                 onClick = {
-//                    viewModel.createTicket()
+                    startActivity(Intent(this@MainActivity, WeighingCreateActivity::class.java))
                 }
             )
 
