@@ -51,6 +51,7 @@ import com.himawan.weighbridge.ui.composable.ToolbarTitleComposable
 import com.himawan.weighbridge.ui.theme.PrimaryColor
 import com.himawan.weighbridge.ui.theme.TextStyles
 import com.himawan.weighbridge.view.weighing_create.WeighingCreateActivity
+import com.himawan.weighbridge.view.weighing_detail.WeighingDetailActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -341,6 +342,9 @@ class MainActivity : ComponentActivity() {
                 Button(
                     onClick = {
                         // navigate to detail
+                        val intent = Intent(this@MainActivity, WeighingDetailActivity::class.java)
+                        intent.putExtra(WeighingDetailActivity.ID_ARG, ticket.id!!)
+                        startActivity(intent)
                     },
                     modifier = Modifier
                         .padding(top = 12.dp),
