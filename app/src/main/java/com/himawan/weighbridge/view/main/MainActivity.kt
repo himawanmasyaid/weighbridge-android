@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
             ButtonPrimary(
                 text = "Create",
                 onClick = {
-
+//                    viewModel.createTicket()
                 }
             )
 

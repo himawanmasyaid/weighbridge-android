@@ -5,15 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.himawan.weighbridge.data.FirebaseReferences
 import com.himawan.weighbridge.data.source.TicketDataSource
+import com.himawan.weighbridge.data.state.ResponseState
 import com.himawan.weighbridge.domain.model.Ticket
 import com.himawan.weighbridge.domain.model.toTicket
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import java.util.UUID
 
 class MainViewModel(
     private val ticketDataSource: TicketDataSource
@@ -25,34 +29,24 @@ class MainViewModel(
     private val _loading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _loading
 
-    val firebaseDatabase = FirebaseDatabase.getInstance("https://weighbridge-d20ca-default-rtdb.asia-southeast1.firebasedatabase.app/")
-    val ticketsRef = firebaseDatabase.getReference(FirebaseReferences.TICKETS)
-
     fun getAllTicket() {
 
         _loading.value = true
 
-        ticketsRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
+        viewModelScope.launch {
+            val response = ticketDataSource.getAllTickets()
 
-                try {
-
-                    val tickets = dataSnapshot.children.map { it.toTicket() }
-                    _tickets.value = tickets
+            when (response) {
+                is ResponseState.Success -> {
+                    _tickets.value = response.data
                     _loading.value = false
-
-                } catch (error: Exception) {
-                    _loading.value = false
-                    setLog("error : ${error.message}")
                 }
 
+                is ResponseState.Failed -> {
+                    _loading.value = false
+                }
             }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                _loading.value = false
-                setLog("tickets : onCancelled")
-            }
-        })
+        }
 
     }
 
