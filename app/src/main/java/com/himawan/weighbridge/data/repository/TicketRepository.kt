@@ -53,6 +53,8 @@ class TicketRepository : TicketDataSource {
 
     override suspend fun updateTicket(ticket: Ticket): ResponseState<Unit> {
 
+        ticket.updatedAt = System.currentTimeMillis()
+
         return try {
             if (ticket.id != null) {
                 ticketsRef.child(ticket.id!!).updateChildren(ticket.toMap()).await()
