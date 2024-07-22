@@ -1,11 +1,12 @@
 package com.himawan.weighbridge.common
 
 import android.os.Build
+import com.himawan.weighbridge.data.DateFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 object DateUtil {
@@ -35,4 +36,9 @@ object DateUtil {
         }
     }
 
+}
+
+fun Long.toServerDateTimeFormat(pattern: String = DateFormat.PREVIEW_DATE_FORMAT): String {
+    val dateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+    return dateFormat.format(Date(this))
 }

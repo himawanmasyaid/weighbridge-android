@@ -105,77 +105,7 @@ class MainActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
 
-                // Pengguna harus dapat memfilter dan mengurutkan
-                // daftar berdasarkan tanggal penimbangan, nama pengemudi, plat nomor
-
-                var sortBy by rememberSaveable { mutableStateOf(SortBy.ASC) }
-                var isExpand by rememberSaveable { mutableStateOf(false) }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    val sortDesc = if (sortBy == SortBy.ASC) "Terbaru" else "Terlama"
-
-                    Text(
-                        text = "Daftar Tiket $sortDesc",
-                        style = TextStyles.textParagraph2Medium
-                    )
-
-                    Box {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_sort),
-                            contentDescription = "sort",
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clickable {
-                                    isExpand = !isExpand
-                                },
-                        )
-
-                        DropdownMenu(
-                            modifier = Modifier.width(100.dp),
-                            expanded = isExpand,
-                            onDismissRequest = { isExpand = false }
-                        ) {
-                            DropdownMenuItem(
-                                onClick = {
-                                    isExpand = false
-                                    if (sortBy != SortBy.ASC) {
-                                        sortBy = SortBy.ASC
-                                        viewModel.getAllTicket(SortBy.ASC)
-                                    }
-                                },
-                                text = {
-                                    Text(
-                                        "Terbaru",
-                                        style = TextStyles.textParagraph2
-                                    )
-                                }
-                            )
-
-                            DropdownMenuItem(
-                                onClick = {
-                                    isExpand = false
-                                    if (sortBy != SortBy.DESC) {
-                                        sortBy = SortBy.DESC
-                                        viewModel.getAllTicket(SortBy.DESC)
-                                    }
-                                },
-                                text = {
-                                    Text(
-                                        "Terlama",
-                                        style = TextStyles.textParagraph2
-                                    )
-                                }
-                            )
-                        }
-                    }
-
-                }
+                FilterView()
 
                 TicketListView(
                     modifier = Modifier
@@ -430,6 +360,78 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun FilterView() {
+
+        // Pengguna harus dapat memfilter dan mengurutkan
+        // daftar berdasarkan tanggal penimbangan, nama pengemudi, plat nomor
+
+        var sortBy by rememberSaveable { mutableStateOf(SortBy.ASC) }
+        var isExpand by rememberSaveable { mutableStateOf(false) }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+
+            val sortDesc = if (sortBy == SortBy.ASC) "Terbaru" else "Terlama"
+
+            Text(
+                text = "Daftar Tiket $sortDesc",
+                style = TextStyles.textParagraph2Medium
+            )
+
+            Box {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_sort),
+                    contentDescription = "sort",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            isExpand = !isExpand
+                        },
+                )
+
+                DropdownMenu(
+                    modifier = Modifier.width(100.dp),
+                    expanded = isExpand,
+                    onDismissRequest = { isExpand = false }
+                ) {
+                    DropdownMenuItem(
+                        onClick = {
+                            isExpand = false
+                            if (sortBy != SortBy.ASC) {
+                                sortBy = SortBy.ASC
+                                viewModel.getAllTicket(SortBy.ASC)
+                            }
+                        },
+                        text = {
+                            Text(
+                                "Terbaru",
+                                style = TextStyles.textParagraph2
+                            )
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        onClick = {
+                            isExpand = false
+                            if (sortBy != SortBy.DESC) {
+                                sortBy = SortBy.DESC
+                                viewModel.getAllTicket(SortBy.DESC)
+                            }
+                        },
+                        text = {
+                            Text(
+                                "Terlama",
+                                style = TextStyles.textParagraph2
+                            )
+                        }
+                    )
+                }
+            }
+
+        }
 
     }
 

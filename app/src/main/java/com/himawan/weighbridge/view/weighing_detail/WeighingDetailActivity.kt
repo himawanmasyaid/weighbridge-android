@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.himawan.weighbridge.common.toServerDateTimeFormat
 import com.himawan.weighbridge.domain.model.Ticket
 import com.himawan.weighbridge.ui.composable.ToolbarComposable
 import com.himawan.weighbridge.ui.theme.LineColor
@@ -147,6 +148,22 @@ class WeighingDetailActivity : ComponentActivity() {
 
             Spacer(
                 modifier = Modifier
+                    .height(4.dp)
+                    .fillMaxWidth()
+            )
+
+            Text(
+                text = "Tanggal Truk Masuk",
+                style = TextStyles.textParagraph2
+            )
+
+            Text(
+                text = "${ticket.date}",
+                style = TextStyles.textParagraph1Bold
+            )
+
+            Spacer(
+                modifier = Modifier
                     .height(16.dp)
                     .fillMaxWidth()
             )
@@ -228,12 +245,31 @@ class WeighingDetailActivity : ComponentActivity() {
             ) {
 
                 Text(
-                    text = "Tanggal Truk Masuk",
+                    text = "Tiket Dibuat",
                     style = TextStyles.textParagraph2
                 )
 
                 Text(
-                    text = "${ticket.date}",
+                    text = "${ticket.createdAt?.toServerDateTimeFormat()}",
+                    style = TextStyles.textParagraph2Medium
+                )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                Text(
+                    text = "Tiket Diperbarui",
+                    style = TextStyles.textParagraph2
+                )
+
+                Text(
+                    text = "${ticket.updatedAt?.toServerDateTimeFormat()}",
                     style = TextStyles.textParagraph2Medium
                 )
             }
