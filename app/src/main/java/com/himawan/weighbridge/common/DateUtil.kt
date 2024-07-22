@@ -38,7 +38,16 @@ object DateUtil {
 
 }
 
-fun Long.toServerDateTimeFormat(pattern: String = DateFormat.PREVIEW_DATE_FORMAT): String {
+fun Long.toServerDateTimeFormat(pattern: String = DateFormat.PREVIEW_DATETIME_FORMAT): String {
     val dateFormat = SimpleDateFormat(pattern, Locale.getDefault())
     return dateFormat.format(Date(this))
+}
+
+fun String.convertDateFormat(currentPattern: String = DateFormat.DATE_FORMAT, expectedPattern: String = DateFormat.PREVIEW_DATE_FORMAT): String {
+
+    val inputFormat = SimpleDateFormat(currentPattern)
+    val outputFormat = SimpleDateFormat(expectedPattern)
+
+    val date = inputFormat.parse(this)
+    return outputFormat.format(date)
 }

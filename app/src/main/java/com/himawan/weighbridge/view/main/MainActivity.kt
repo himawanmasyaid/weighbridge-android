@@ -54,6 +54,8 @@ import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.himawan.weighbridge.R
+import com.himawan.weighbridge.common.convertDateFormat
+import com.himawan.weighbridge.common.toServerDateTimeFormat
 import com.himawan.weighbridge.data.SortBy
 import com.himawan.weighbridge.domain.model.Ticket
 import com.himawan.weighbridge.ui.composable.ButtonPrimary
@@ -131,8 +133,6 @@ class MainActivity : ComponentActivity() {
 
         val tickets = viewModel.tickets.collectAsState(initial = emptyList()).value
         val isLoading = viewModel.isLoading.observeAsState()
-
-        setLog("tickets : ${tickets.size}")
 
         Box(modifier = modifier) {
 
@@ -324,7 +324,24 @@ class MainActivity : ComponentActivity() {
                 )
 
                 Text(
-                    text = ticket.date,
+                    text = ticket.date.convertDateFormat(),
+                    style = TextStyles.textParagraph2Medium
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                Text(
+                    text = "Tiket Diperbarui",
+                    style = TextStyles.textParagraph2
+                )
+
+                Text(
+                    text = "${ticket.updatedAt?.toServerDateTimeFormat()}",
                     style = TextStyles.textParagraph2Medium
                 )
             }
@@ -361,7 +378,6 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun FilterView() {
 
-        // Pengguna harus dapat memfilter dan mengurutkan
         // daftar berdasarkan tanggal penimbangan, nama pengemudi, plat nomor
 
         var sortBy by rememberSaveable { mutableStateOf(SortBy.ASC) }
@@ -374,10 +390,15 @@ class MainActivity : ComponentActivity() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
-            val sortDesc = if (sortBy == SortBy.ASC) "Terbaru" else "Terlama"
+            val sort = when(sortBy) {
+                SortBy.ASC -> "Terbaru"
+                SortBy.DESC -> "Terlama"
+                SortBy.HEAVY -> "Muatan Terberat"
+                SortBy.LIGHT -> "Muatan Teringan"
+            }
 
             Text(
-                text = "Daftar Tiket $sortDesc",
+                text = "Daftar Tiket $sort",
                 style = TextStyles.textParagraph2Medium
             )
 
@@ -393,7 +414,7 @@ class MainActivity : ComponentActivity() {
                 )
 
                 DropdownMenu(
-                    modifier = Modifier.width(100.dp),
+                    modifier = Modifier.width(200.dp),
                     expanded = isExpand,
                     onDismissRequest = { isExpand = false }
                 ) {
@@ -428,6 +449,39 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     )
+
+                    DropdownMenuItem(
+                        onClick = {
+                            isExpand = false
+                            if (sortBy != SortBy.HEAVY) {
+                                sortBy = SortBy.HEAVY
+                                viewModel.getAllTicket(SortBy.HEAVY)
+                            }
+                        },
+                        text = {
+                            Text(
+                                "Muatan Terberat",
+                                style = TextStyles.textParagraph2
+                            )
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        onClick = {
+                            isExpand = false
+                            if (sortBy != SortBy.LIGHT) {
+                                sortBy = SortBy.LIGHT
+                                viewModel.getAllTicket(SortBy.LIGHT)
+                            }
+                        },
+                        text = {
+                            Text(
+                                "Muatan Teringan",
+                                style = TextStyles.textParagraph2
+                            )
+                        }
+                    )
+
                 }
             }
 
@@ -487,20 +541,18 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainActivityPreview() {
 
-    MainActivity().Dropdown()
-
-//    MainActivity().TicketItem(
-//        Ticket(
-//            id = "1234",
-//            date = "2023-03-15",
-//            time = "14:30:00",
-//            licenseNumber = "BG 1234 AB",
-//            driverName = "Arsad Sapardie",
-//            inboundWeight = 10000,
-//            outboundWeight = 8000,
-//            netWeight = 2000,
-//            createdAt = 1678903400,
-//            updatedAt = 1678903400
-//        )
-//    )
+    MainActivity().TicketItem(
+        Ticket(
+            id = "1234",
+            date = "2023-03-15",
+            time = "14:30:00",
+            licenseNumber = "BG 1234 AB",
+            driverName = "Arsad Sapardie",
+            inboundWeight = 10000,
+            outboundWeight = 8000,
+            netWeight = 2000,
+            createdAt = 1678903400,
+            updatedAt = 1678903400
+        )
+    )
 }

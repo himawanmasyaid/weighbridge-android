@@ -22,8 +22,10 @@ class TicketRepository : TicketDataSource {
                 snapShot.toTicket()
             }.let {
                 when (sort) {
-                    SortBy.ASC -> it.sortedByDescending { it.date } // oldest first
-                    SortBy.DESC -> it.sortedBy { it.date } // newest first
+                    SortBy.ASC -> it.sortedByDescending { it.updatedAt }
+                    SortBy.DESC -> it.sortedBy { it.updatedAt }
+                    SortBy.HEAVY -> it .sortedByDescending { it.netWeight }
+                    SortBy.LIGHT -> it .sortedBy { it.netWeight }
                 }
             }
             return ResponseState.Success(tickets)

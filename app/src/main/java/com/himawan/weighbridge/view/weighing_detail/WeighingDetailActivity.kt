@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.himawan.weighbridge.common.convertDateFormat
 import com.himawan.weighbridge.common.toServerDateTimeFormat
 import com.himawan.weighbridge.domain.model.Ticket
 import com.himawan.weighbridge.ui.composable.ToolbarComposable
@@ -99,7 +100,6 @@ class WeighingDetailActivity : ComponentActivity() {
     @Composable
     fun DetailView(ticket: Ticket, modifier: Modifier) {
 
-
         Column(
             modifier = modifier
         ) {
@@ -158,7 +158,7 @@ class WeighingDetailActivity : ComponentActivity() {
             )
 
             Text(
-                text = "${ticket.date}",
+                text = ticket.date.convertDateFormat(),
                 style = TextStyles.textParagraph1Bold
             )
 
