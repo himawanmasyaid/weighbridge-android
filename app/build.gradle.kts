@@ -80,6 +80,8 @@ dependencies {
     // koin
     implementation("io.insert-koin:koin-android:3.3.3")
     implementation("io.insert-koin:koin-androidx-workmanager:3.3.3")
+    testImplementation("io.insert-koin:koin-test:3.3.3")
+    testImplementation("io.insert-koin:koin-test-junit4:3.3.3")
 
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
@@ -88,5 +90,9 @@ dependencies {
     // room database
     implementation(libs.bundles.room)
     kapt(libs.room.compiler)
+
+    // mockito
+    testImplementation("org.mockito:mockito-core:3.8.0")
+    testImplementation("org.mockito:mockito-inline:3.8.0")
 
 }
