@@ -65,8 +65,4 @@ class WeighingCreateViewModel(
 
     }
 
-    private fun setLog(msg: String) {
-        Log.e("create", msg)
-    }
-
 }

@@ -16,6 +16,10 @@ class TicketRepository : TicketDataSource {
         FirebaseDatabase.getInstance("https://weighbridge-d20ca-default-rtdb.asia-southeast1.firebasedatabase.app/")
     val ticketsRef = firebaseDatabase.getReference("tickets")
 
+    init {
+        ticketsRef.keepSynced(true)
+    }
+
     override suspend fun getAllTickets(sort: SortBy): ResponseState<List<Ticket?>> {
         try {
             val tickets = ticketsRef.get().await().children.map { snapShot ->

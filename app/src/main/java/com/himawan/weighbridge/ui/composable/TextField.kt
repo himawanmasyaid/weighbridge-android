@@ -108,17 +108,6 @@ fun OutlinedTextSelectComposable(
 @Composable
 fun TextFieldPreview() {
 
-    var outboundWeight by rememberSaveable { mutableStateOf("") }
-
 //    OutlinedTextSelectComposable("Input data disini", {})
 
-//    OutlinedTextFieldComposable(
-//        value = outboundWeight,
-//        onValueChange = { outboundWeight = it },
-//        label = "Input berat muatan (TON)",
-//        keyboardOptions = KeyboardOptions.Default.copy(
-//            keyboardType = KeyboardType.Number,
-//            autoCorrect = false,
-//        )
-//    )
 }
