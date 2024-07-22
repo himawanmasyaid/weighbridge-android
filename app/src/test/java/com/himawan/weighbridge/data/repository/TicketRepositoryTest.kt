@@ -78,4 +78,11 @@ class TicketRepositoryTest: KoinTest {
         Assert.assertEquals(ResponseState.Success(Unit), result)
     }
 
+    @Test
+    fun `test searchTickets`() = runBlocking {
+        val expected = MockTicketRepository.TICKETS
+        val result = ticketRepository.searchTickets("Suyatna")
+        Assert.assertEquals(ResponseState.Success(expected), result)
+    }
+
 }

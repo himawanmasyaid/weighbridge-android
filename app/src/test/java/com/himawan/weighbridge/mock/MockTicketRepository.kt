@@ -27,6 +27,10 @@ class MockTicketRepository : TicketDataSource {
         return ResponseState.Success(Unit)
     }
 
+    override suspend fun searchTickets(query: String, sort: SortBy): ResponseState<List<Ticket?>> {
+        return ResponseState.Success(TICKETS)
+    }
+
     companion object {
 
         val TICKET_DETAIL = Ticket(
