@@ -6,6 +6,7 @@ import com.himawan.weighbridge.data.state.ResponseState
 import com.himawan.weighbridge.mock.MockTicketRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -14,7 +15,11 @@ import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
 import org.junit.Test
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.mockito.junit.MockitoJUnitRunner
+import org.koin.test.get
+import org.koin.test.inject
 
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
@@ -31,19 +36,26 @@ class TicketRepositoryTest: KoinTest {
 
     @Before
     fun setup() {
-        ticketRepository = getKoin().get()
+        ticketRepository = koinTestRule.koin.get()
+    }
+
+    @After
+    fun tearDown() {
+        stopKoin()
     }
 
     @Test
     fun `test getAllTickets`() = runBlocking {
+        val expected = MockTicketRepository.TICKETS
         val result = ticketRepository.getAllTickets(SortBy.ASC)
-        Assert.assertEquals(ResponseState.Success(MockTicketRepository.TICKETS), result)
+        Assert.assertEquals(ResponseState.Success(expected), result)
     }
 
     @Test
     fun `test getTicket`() = runBlocking {
+        val expected = MockTicketRepository.TICKET_DETAIL
         val result = ticketRepository.getTicket("1234")
-        Assert.assertEquals(ResponseState.Success(MockTicketRepository.TICKET_DETAIL), result)
+        Assert.assertEquals(ResponseState.Success(expected), result)
     }
 
     @Test

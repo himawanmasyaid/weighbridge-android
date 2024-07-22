@@ -51,8 +51,4 @@ class MainViewModel(
 
     }
 
-    private fun setLog(msg: String) {
-        Log.e("vm", msg)
-    }
-
 }
