@@ -2,6 +2,8 @@ package com.himawan.weighbridge.data.repository
 
 import android.util.Log
 import com.google.firebase.database.FirebaseDatabase
+import com.himawan.weighbridge.common.DateUtil
+import com.himawan.weighbridge.data.SortBy
 import com.himawan.weighbridge.data.source.TicketDataSource
 import com.himawan.weighbridge.data.state.ResponseState
 import com.himawan.weighbridge.domain.model.Ticket
@@ -14,10 +16,15 @@ class TicketRepository : TicketDataSource {
         FirebaseDatabase.getInstance("https://weighbridge-d20ca-default-rtdb.asia-southeast1.firebasedatabase.app/")
     val ticketsRef = firebaseDatabase.getReference("tickets")
 
-    override suspend fun getAllTickets(): ResponseState<List<Ticket?>> {
+    override suspend fun getAllTickets(sort: SortBy): ResponseState<List<Ticket?>> {
         try {
             val tickets = ticketsRef.get().await().children.map { snapShot ->
                 snapShot.toTicket()
+            }.let {
+                when (sort) {
+                    SortBy.ASC -> it.sortedByDescending { it.date } // oldest first
+                    SortBy.DESC -> it.sortedBy { it.date } // newest first
+                }
             }
             return ResponseState.Success(tickets)
         } catch (exception: Exception) {
@@ -41,6 +48,7 @@ class TicketRepository : TicketDataSource {
         ticket.createdAt = System.currentTimeMillis()
         ticket.updatedAt = System.currentTimeMillis()
         ticket.id = id
+        ticket.time = DateUtil.getCurrentTime()
 
         return try {
             ticketsRef.child(id).setValue(ticket).await()

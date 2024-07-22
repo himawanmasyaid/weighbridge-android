@@ -44,7 +44,6 @@ class WeighingCreateViewModel(
 
                     val netWeight = ticket.inboundWeight - ticket.outboundWeight
                     ticket.netWeight = netWeight
-                    ticket.time = DateUtil.getCurrentTime()
 
                     val response = ticketDataSource.createTicket(ticket)
                     when (response) {
