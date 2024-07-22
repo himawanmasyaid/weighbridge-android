@@ -17,3 +17,4 @@ val LineColor = Color(0xFFE0E0E0)
 val TextDefaultColor = Dune
 val PrimaryColor = Green
 val HintColor =  Color(0xFF828282)
+val PorcelainColor =  Color(0xFFF2F2F2)

@@ -52,6 +52,7 @@ import com.himawan.weighbridge.ui.theme.PrimaryColor
 import com.himawan.weighbridge.ui.theme.TextStyles
 import com.himawan.weighbridge.view.weighing_create.WeighingCreateActivity
 import com.himawan.weighbridge.view.weighing_detail.WeighingDetailActivity
+import com.himawan.weighbridge.view.weighing_edit.WeighingEditActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -222,7 +223,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier
                         .size(24.dp)
                         .clickable {
-                            // navigate to edit
+                            val intent = Intent(this@MainActivity, WeighingEditActivity::class.java)
+                            intent.putExtra(WeighingEditActivity.ID_ARG, ticket.id)
+                            startActivity(intent)
                         },
                 )
             }
