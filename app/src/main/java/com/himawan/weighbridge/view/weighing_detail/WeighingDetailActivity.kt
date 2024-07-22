@@ -136,12 +136,12 @@ class WeighingDetailActivity : ComponentActivity() {
             )
 
             Text(
-                text = "${ticket.netWeight}",
+                text = "Berat Bersih Muatan",
                 style = TextStyles.textParagraph2
             )
 
             Text(
-                text = "1000 TON",
+                text = "${ticket.netWeight}",
                 style = TextStyles.textParagraph1Bold
             )
 
