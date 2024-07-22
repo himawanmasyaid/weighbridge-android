@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.himawan.weighbridge.data.FirebaseReferences
+import com.himawan.weighbridge.data.SortBy
 import com.himawan.weighbridge.data.source.TicketDataSource
 import com.himawan.weighbridge.data.state.ResponseState
 import com.himawan.weighbridge.domain.model.Ticket
@@ -29,12 +30,12 @@ class MainViewModel(
     private val _loading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _loading
 
-    fun getAllTicket() {
+    fun getAllTicket(sort: SortBy = SortBy.ASC) {
 
         _loading.value = true
 
         viewModelScope.launch {
-            val response = ticketDataSource.getAllTickets()
+            val response = ticketDataSource.getAllTickets(sort)
 
             when (response) {
                 is ResponseState.Success -> {

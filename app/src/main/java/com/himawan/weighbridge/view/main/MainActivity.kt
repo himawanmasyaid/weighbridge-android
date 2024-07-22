@@ -20,30 +20,41 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.himawan.weighbridge.R
+import com.himawan.weighbridge.data.SortBy
 import com.himawan.weighbridge.domain.model.Ticket
 import com.himawan.weighbridge.ui.composable.ButtonPrimary
 import com.himawan.weighbridge.ui.composable.ToolbarComposable
@@ -97,23 +108,73 @@ class MainActivity : ComponentActivity() {
                 // Pengguna harus dapat memfilter dan mengurutkan
                 // daftar berdasarkan tanggal penimbangan, nama pengemudi, plat nomor
 
+                var sortBy by rememberSaveable { mutableStateOf(SortBy.ASC) }
+                var isExpand by rememberSaveable { mutableStateOf(false) }
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Daftar tiket terbaru", style = TextStyles.textParagraph2Medium)
 
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_sort),
-                        contentDescription = "sort",
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clickable {
-                                // navigate to edit
-                            },
+                    val sortDesc = if (sortBy == SortBy.ASC) "Terbaru" else "Terlama"
+
+                    Text(
+                        text = "Daftar Tiket $sortDesc",
+                        style = TextStyles.textParagraph2Medium
                     )
+
+                    Box {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_sort),
+                            contentDescription = "sort",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable {
+                                    isExpand = !isExpand
+                                },
+                        )
+
+                        DropdownMenu(
+                            modifier = Modifier.width(100.dp),
+                            expanded = isExpand,
+                            onDismissRequest = { isExpand = false }
+                        ) {
+                            DropdownMenuItem(
+                                onClick = {
+                                    isExpand = false
+                                    if (sortBy != SortBy.ASC) {
+                                        sortBy = SortBy.ASC
+                                        viewModel.getAllTicket(SortBy.ASC)
+                                    }
+                                },
+                                text = {
+                                    Text(
+                                        "Terbaru",
+                                        style = TextStyles.textParagraph2
+                                    )
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                onClick = {
+                                    isExpand = false
+                                    if (sortBy != SortBy.DESC) {
+                                        sortBy = SortBy.DESC
+                                        viewModel.getAllTicket(SortBy.DESC)
+                                    }
+                                },
+                                text = {
+                                    Text(
+                                        "Terlama",
+                                        style = TextStyles.textParagraph2
+                                    )
+                                }
+                            )
+                        }
+                    }
+
                 }
 
                 TicketListView(
@@ -333,7 +394,7 @@ class MainActivity : ComponentActivity() {
                 )
 
                 Text(
-                    text = ticket.time,
+                    text = ticket.date,
                     style = TextStyles.textParagraph2Medium
                 )
             }
@@ -376,26 +437,68 @@ class MainActivity : ComponentActivity() {
         Log.e("ticket", msg)
     }
 
+    @Composable
+    fun Dropdown() {
+
+        var expanded by remember { mutableStateOf(false) }
+        var selectSortBy by rememberSaveable { mutableStateOf(SortBy.ASC) }
+
+        Column {
+            Text(
+                text = "Selected: $selectSortBy",
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                DropdownMenuItem(
+                    onClick = { selectSortBy = SortBy.ASC },
+                    text = { Text("Terlama") }
+                )
+
+                DropdownMenuItem(
+                    onClick = { selectSortBy = SortBy.DESC },
+                    text = { Text("Terbaru") }
+                )
+            }
+
+            // Clickable area to toggle the dropdown
+            Box(modifier = Modifier.size(200.dp)) {
+                Text(
+                    text = "Click here to expand",
+                    color = Color.Blue,
+                    fontSize = 20.sp,
+                    modifier = Modifier.clickable(onClick = { expanded = true })
+                )
+            }
+        }
+
+    }
+
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun MainActivityPreview() {
 
-//    MainActivity().InitView()
+    MainActivity().Dropdown()
 
-    MainActivity().TicketItem(
-        Ticket(
-            id = "1234",
-            date = "2023-03-15",
-            time = "14:30:00",
-            licenseNumber = "BG 1234 AB",
-            driverName = "Arsad Sapardie",
-            inboundWeight = 10000,
-            outboundWeight = 8000,
-            netWeight = 2000,
-            createdAt = 1678903400,
-            updatedAt = 1678903400
-        )
-    )
+//    MainActivity().TicketItem(
+//        Ticket(
+//            id = "1234",
+//            date = "2023-03-15",
+//            time = "14:30:00",
+//            licenseNumber = "BG 1234 AB",
+//            driverName = "Arsad Sapardie",
+//            inboundWeight = 10000,
+//            outboundWeight = 8000,
+//            netWeight = 2000,
+//            createdAt = 1678903400,
+//            updatedAt = 1678903400
+//        )
+//    )
 }

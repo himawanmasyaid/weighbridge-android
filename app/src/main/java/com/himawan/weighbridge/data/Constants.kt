@@ -9,3 +9,8 @@ object DateFormat {
 object FirebaseReferences {
     const val TICKETS = "tickets"
 }
+
+enum class SortBy {
+    ASC, // new
+    DESC // old
+}
