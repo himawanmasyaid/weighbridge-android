@@ -16,7 +16,6 @@ data class Ticket (
 ) {
     fun toMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
             "date" to date,
             "driverName" to driverName,
             "inboundWeight" to inboundWeight,
