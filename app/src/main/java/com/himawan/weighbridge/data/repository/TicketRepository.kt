@@ -24,8 +24,8 @@ class TicketRepository : TicketDataSource {
                 when (sort) {
                     SortBy.ASC -> it.sortedByDescending { it.updatedAt }
                     SortBy.DESC -> it.sortedBy { it.updatedAt }
-                    SortBy.HEAVY -> it .sortedByDescending { it.netWeight }
-                    SortBy.LIGHT -> it .sortedBy { it.netWeight }
+                    SortBy.HEAVY -> it.sortedByDescending { it.netWeight }
+                    SortBy.LIGHT -> it.sortedBy { it.netWeight }
                 }
             }
             return ResponseState.Success(tickets)
@@ -91,8 +91,27 @@ class TicketRepository : TicketDataSource {
         }
     }
 
-    private fun setLog(msg: String) {
-        Log.e("repository", msg)
+    override suspend fun searchTickets(
+        query: String,
+        sort: SortBy
+    ): ResponseState<List<Ticket?>> {
+        try {
+
+            val tickets = ticketsRef.orderByChild("driverName").equalTo(query).get().await().children.map { snapShot ->
+                snapShot.toTicket()
+            }.let {
+                when (sort) {
+                    SortBy.ASC -> it.sortedByDescending { it.updatedAt }
+                    SortBy.DESC -> it.sortedBy { it.updatedAt }
+                    SortBy.HEAVY -> it.sortedByDescending { it.netWeight }
+                    SortBy.LIGHT -> it.sortedBy { it.netWeight }
+                }
+            }
+
+            return ResponseState.Success(tickets)
+        } catch (exception: Exception) {
+            return ResponseState.Failed(exception.message)
+        }
     }
 
 }

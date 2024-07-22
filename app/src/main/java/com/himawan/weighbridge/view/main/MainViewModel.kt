@@ -51,4 +51,27 @@ class MainViewModel(
 
     }
 
+    fun searchTicket(query: String) {
+
+        viewModelScope.launch {
+
+            val response = if (query.isEmpty()) {
+                ticketDataSource.getAllTickets()
+            } else {
+                ticketDataSource.searchTickets(query)
+            }
+
+            when (response) {
+                is ResponseState.Success -> {
+                    _tickets.value = response.data
+                }
+
+                is ResponseState.Failed -> {
+                    _loading.value = false
+                }
+            }
+        }
+
+    }
+
 }

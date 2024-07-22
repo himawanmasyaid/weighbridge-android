@@ -25,15 +25,24 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,7 +55,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -61,6 +72,8 @@ import com.himawan.weighbridge.domain.model.Ticket
 import com.himawan.weighbridge.ui.composable.ButtonPrimary
 import com.himawan.weighbridge.ui.composable.ToolbarComposable
 import com.himawan.weighbridge.ui.composable.ToolbarTitleComposable
+import com.himawan.weighbridge.ui.theme.HintColor
+import com.himawan.weighbridge.ui.theme.LineColor
 import com.himawan.weighbridge.ui.theme.PrimaryColor
 import com.himawan.weighbridge.ui.theme.TextStyles
 import com.himawan.weighbridge.view.weighing_create.WeighingCreateActivity
@@ -106,6 +119,8 @@ class MainActivity : ComponentActivity() {
                     .padding(it),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
+
+                SearchView()
 
                 FilterView()
 
@@ -378,8 +393,6 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun FilterView() {
 
-        // daftar berdasarkan tanggal penimbangan, nama pengemudi, plat nomor
-
         var sortBy by rememberSaveable { mutableStateOf(SortBy.ASC) }
         var isExpand by rememberSaveable { mutableStateOf(false) }
 
@@ -390,7 +403,7 @@ class MainActivity : ComponentActivity() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
-            val sort = when(sortBy) {
+            val sort = when (sortBy) {
                 SortBy.ASC -> "Terbaru"
                 SortBy.DESC -> "Terlama"
                 SortBy.HEAVY -> "Muatan Terberat"
@@ -489,70 +502,58 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    private fun setLog(msg: String) {
-        Log.e("ticket", msg)
-    }
-
     @Composable
-    fun Dropdown() {
+    fun SearchView() {
 
-        var expanded by remember { mutableStateOf(false) }
-        var selectSortBy by rememberSaveable { mutableStateOf(SortBy.ASC) }
+        var searchValue by remember { mutableStateOf("") }
 
-        Column {
-            Text(
-                text = "Selected: $selectSortBy",
-                fontSize = 20.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = 16.dp)
-            )
-
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                DropdownMenuItem(
-                    onClick = { selectSortBy = SortBy.ASC },
-                    text = { Text("Terlama") }
-                )
-
-                DropdownMenuItem(
-                    onClick = { selectSortBy = SortBy.DESC },
-                    text = { Text("Terbaru") }
-                )
-            }
-
-            // Clickable area to toggle the dropdown
-            Box(modifier = Modifier.size(200.dp)) {
+        OutlinedTextField(
+            shape = RoundedCornerShape(30.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp, horizontal = 16.dp)
+                .background(
+                    Color.White,
+                ),
+            value = searchValue,
+            onValueChange = { searchValue = it },
+            placeholder = {
                 Text(
-                    text = "Click here to expand",
-                    color = Color.Blue,
-                    fontSize = 20.sp,
-                    modifier = Modifier.clickable(onClick = { expanded = true })
+                    "Cari nama supir",
+                    style = TextStyles.textParagraph2Medium,
+                    color = HintColor,
+                    modifier = Modifier.padding(start = 6.dp)
                 )
-            }
-        }
-
+            },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    viewModel.searchTicket(searchValue)
+                }
+            ),
+            singleLine = true,
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "Search",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(end = 12.dp)
+                )
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                cursorColor = HintColor,
+                focusedBorderColor = HintColor,
+                unfocusedBorderColor = HintColor,
+            )
+        )
     }
 
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun MainActivityPreview() {
 
-    MainActivity().TicketItem(
-        Ticket(
-            id = "1234",
-            date = "2023-03-15",
-            time = "14:30:00",
-            licenseNumber = "BG 1234 AB",
-            driverName = "Arsad Sapardie",
-            inboundWeight = 10000,
-            outboundWeight = 8000,
-            netWeight = 2000,
-            createdAt = 1678903400,
-            updatedAt = 1678903400
-        )
-    )
+    MainActivity().SearchView()
 }

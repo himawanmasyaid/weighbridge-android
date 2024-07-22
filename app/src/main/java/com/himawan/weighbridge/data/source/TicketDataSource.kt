@@ -13,5 +13,6 @@ interface TicketDataSource {
     suspend fun createTicket(ticket: Ticket): ResponseState<Unit>
     suspend fun updateTicket(ticket: Ticket): ResponseState<Unit>
     suspend fun deleteTicket(id: String): ResponseState<Unit>
+    suspend fun searchTickets(query: String, sort: SortBy = SortBy.ASC): ResponseState<List<Ticket?>>
 
 }
